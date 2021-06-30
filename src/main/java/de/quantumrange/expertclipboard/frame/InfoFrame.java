@@ -53,19 +53,16 @@ public class InfoFrame extends JWindow {
 
 		setVisible(true);
 
-		if (animationState != 2 && animationState != 1) {
-			if (animationState == 0) panel.repaint();
-			System.out.println("animationState = " + animationState);
+		if (animationState == 0) panel.repaint();
 
-			animationState = 1;
-			animations[0] = new Animation(
-					panel.renderSize.width,
-					originalWidth,
-					1000,
-					value -> panel.renderSize.width = value,
-					success -> animationState = 2, Animation.AnimationType.EASE_IN_OUT_BOUNCE);
-			animations[0].start();
-		}
+		animationState = 1;
+		animations[0] = new Animation(
+				panel.renderSize.width,
+				originalWidth,
+				1000,
+				value -> panel.renderSize.width = value,
+				success -> animationState = 2, Animation.AnimationType.EASE_IN_OUT_BOUNCE);
+		animations[0].start();
 	}
 
 	public void close() {

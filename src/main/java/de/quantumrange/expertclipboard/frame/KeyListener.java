@@ -26,6 +26,8 @@ public class KeyListener implements NativeKeyListener {
 
 	@Override
 	public void nativeKeyReleased(NativeKeyEvent e) {
+		System.out.println("Press: " + e.getKeyCode() + " with " + e.getModifiers());
+
 		if (e.getModifiers() == (ALT_L_MASK | SHIFT_L_MASK)) {
 			if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
 				Main.frame.close();

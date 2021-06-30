@@ -48,6 +48,7 @@ public class HistoryFrame extends JWindow {
 		if (Clipboard.getLast(id) == null) return;
 
 		this.selected = 0;
+		this.selectedPixel = 0;
 		this.currentSlot = id;
 		this.previewPixel = 0;
 		this.isOpen = true;
@@ -58,6 +59,7 @@ public class HistoryFrame extends JWindow {
 			if (index < 0) index += (Clipboard.MAX_HISTORY - 1);
 
 			if (items[index] != null) {
+				System.out.println("Found save: " + i + " with index: " + index);
 				maxHistory++;
 				if (maxHistory == 8) break;
 			} else break;
@@ -156,9 +158,6 @@ public class HistoryFrame extends JWindow {
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 
-			g2d.setColor(Color.RED);
-			g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-
 			g2d.setClip(new Rectangle2D.Double(0, 0, renderSize.width, renderSize.height));
 
 			FrameUtil.updateAnimations(animations);
@@ -200,14 +199,14 @@ public class HistoryFrame extends JWindow {
 
 			// Render preview
 			int i = Clipboard.slotIndexes[currentSlot] - selected;
-			if (i < 0) i = Clipboard.MAX_HISTORY;
-			i %= Clipboard.MAX_HISTORY;
-
-			if (previews[i] == null) {
-				reloadPreview(Clipboard.slots[selected]);
-			}
+			if (i < 0) i += Clipboard.MAX_HISTORY - 1;
 
 			BufferedImage image = previews[i];
+
+			if (image == null) {
+				reloadPreview(Clipboard.slots[currentSlot]);
+				image = previews[i];
+			}
 
 			g2d.drawImage(image, 100,
 					renderSize.height / 2 - image.getHeight() / 2,
@@ -220,7 +219,11 @@ public class HistoryFrame extends JWindow {
 			ClipItem[] items = Clipboard.slots[currentSlot];
 
 			for (int y = 0; y < maxHistory; y++) {
-				ClipItem item = items[(Clipboard.slotIndexes[currentSlot] - y)];
+				int ind = Clipboard.slotIndexes[currentSlot] - y;
+				while (ind < 0) ind += Clipboard.MAX_HISTORY - 1;
+				ClipItem item = items[ind];
+
+				if (item == null) continue;
 
 				String oldString = item.getDateTime().toString();
 
