@@ -73,6 +73,9 @@ public class NotifyFrame extends JWindow {
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 
+//			g2d.setColor(Color.RED);
+//			g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+
 			List<Notify> list = notifies.stream().filter(notify -> !notify.isDone()).collect(Collectors.toList());
 			notifies = list;
 

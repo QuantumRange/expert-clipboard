@@ -19,12 +19,10 @@ import java.util.function.*;
 
 public class ClipItem {
 
-	private LocalDateTime createDate;
 	private final ClipType<?> obj;
 	private final ClipItemType type;
 
-	public ClipItem(LocalDateTime createDate, ClipType<?> obj, ClipItemType type) {
-		this.createDate = createDate;
+	public ClipItem(ClipType<?> obj, ClipItemType type) {
 		this.obj = obj;
 		this.type = type;
 	}
@@ -58,10 +56,6 @@ public class ClipItem {
 		}
 	}
 
-	public LocalDateTime getCreateDate() {
-		return createDate;
-	}
-
 	public ClipItemType getType() {
 		return type;
 	}
@@ -75,18 +69,17 @@ public class ClipItem {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		ClipItem clipItem = (ClipItem) o;
-		return Objects.equals(createDate, clipItem.createDate) && Objects.equals(obj, clipItem.obj) && type == clipItem.type;
+		return Objects.equals(obj, clipItem.obj) && type == clipItem.type;
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(createDate, obj, type);
+		return Objects.hash(obj, type);
 	}
 
 	@Override
 	public String toString() {
 		return "ClipItem{" +
-				"createDate=" + createDate +
 				", obj=" + obj +
 				", type=" + type +
 				'}';

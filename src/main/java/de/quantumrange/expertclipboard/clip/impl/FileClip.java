@@ -22,8 +22,8 @@ public class FileClip extends ClipType<List<File>> {
 		super(DataFlavor.javaFileListFlavor, data);
 	}
 
-	public FileClip(Object obj) {
-		this((List<File>) obj);
+	public FileClip(Object data) {
+		this(data == null ? null : (List<File>) data);
 	}
 
 	@Override

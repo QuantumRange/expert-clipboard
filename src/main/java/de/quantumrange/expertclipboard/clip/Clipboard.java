@@ -10,6 +10,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class Clipboard {
@@ -27,6 +29,10 @@ public class Clipboard {
 
 	public static ClipItem getLast(int slot) {
 		return slots[slot][slotIndexes[slot]];
+	}
+
+	static {
+		load(new File("./clip/"));
 	}
 
 	public static void redo() {
@@ -89,7 +95,7 @@ public class Clipboard {
 			slots[currentSlot][slotIndexes[currentSlot]] = item;
 
 			Main.frame.updateClipboard();
-			save(new File("./"));
+			save(new File("./clip/"));
 //			Notify.success("The %s was stored in clipboard.".formatted(getLast().getType().getDisplayName()));
 		}
 	}
@@ -114,10 +120,7 @@ public class Clipboard {
 			for (ClipItem.ClipItemType type : ClipItem.ClipItemType.values()) {
 				try {
 					if (clipboard.isDataFlavorAvailable(type.getFlavor())) {
-						item = new ClipItem(LocalDateTime.now(),
-								type.getToClip().apply(clipboard.getContents(null).getTransferData(type.getFlavor())),
-								type);
-
+						item = new ClipItem(type.getToClip().apply(clipboard.getContents(null).getTransferData(type.getFlavor())), type);
 						return item;
 					}
 				} catch (IllegalStateException ignored) { }
@@ -138,18 +141,89 @@ public class Clipboard {
 		}
 	}
 
+	public static ExecutorService executors;
+
 	public static void save(File dir) {
-		File indexFile = new File(dir, "index.txt");
+		if (executors == null) executors = Executors.newFixedThreadPool(1);
 
-		FileUtil.write(indexFile, Arrays.stream(slotIndexes)
-						.mapToObj(String::valueOf)
-						.collect(Collectors.joining(":")));
+		executors.execute(() -> {
+			dir.mkdirs();
 
+			File indexFile = new File(dir, "index.txt");
 
+			FileUtil.write(indexFile, Arrays.stream(slotIndexes)
+					.mapToObj(String::valueOf)
+					.collect(Collectors.joining(":")));
+
+			File dataFile = new File(dir, "data.txt");
+			FileUtil.write(dataFile, Arrays.stream(slots)
+					.map(clipItems -> Arrays.stream(clipItems)
+							.map(clipItem -> clipItem == null ? "NULL" : clipItem.getType().name())
+							.collect(Collectors.joining(";")))
+					.collect(Collectors.joining("\n")));
+
+			File dataDir = new File(dir, "data/");
+			dataDir.mkdirs();
+
+			for (int x = 0; x < slots.length; x++) {
+				for (int y = 0; y < slots[x].length; y++) {
+					if (slots[x][y] != null) {
+						slots[x][y].getObj().writeToFile(new File(dataDir, "%d-%d.dat".formatted(x, y)));
+					}
+				}
+			}
+		});
 	}
 
 	public static void load(File dir) {
+		System.out.println("Load...");
 
+		dir.mkdirs();
+
+		File indexFile = new File(dir, "index.txt");
+
+		if (!indexFile.exists()) return;
+
+		String[] indexArgs = FileUtil.read(indexFile).split("\\:");
+
+		for (int i = 0; i < indexArgs.length; i++) {
+			slotIndexes[i] = Integer.parseInt(indexArgs[i]);
+		}
+
+		File dataFile = new File(dir, "data.txt");
+		ClipItem.ClipItemType[][] clipItemTypes = new ClipItem.ClipItemType[9][MAX_HISTORY];
+		String[] lines = FileUtil.read(dataFile).split("\n");
+
+		for (int x = 0; x < lines.length; x++) {
+			String[] entries = lines[x].split(";");
+
+			for (int y = 0; y < entries.length; y++) {
+				String dat = entries[y];
+
+				if (dat.equals("NULL")) clipItemTypes[x][y] = null;
+				else clipItemTypes[x][y] = ClipItem.ClipItemType.valueOf(dat);
+			}
+		}
+
+		File dataDir = new File(dir, "data/");
+		dataDir.mkdirs();
+
+		for (int x = 0; x < slots.length; x++) {
+			for (int y = 0; y < slots[x].length; y++) {
+				File file = new File(dataDir, "%d-%d.dat".formatted(x, y));
+				if (file.exists()) {
+					ClipItem.ClipItemType t = clipItemTypes[x][y];
+
+					ClipType<?> type = t.getToClip().apply(null);
+
+					type.readFromFile(file);
+
+					slots[x][y] = new ClipItem(type, t);
+				} else slots[x][y] = null;
+			}
+		}
+
+		System.out.println("Loaded!");
 	}
 
 }

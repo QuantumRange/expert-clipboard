@@ -14,7 +14,7 @@ public class StringClip extends ClipType<String> {
 	}
 
 	public StringClip(Object data) {
-		this(data.toString());
+		this(data == null ? "" : data.toString());
 	}
 
 	@Override

@@ -147,6 +147,13 @@ public class InfoFrame extends JWindow {
 
 //			g2d.setColor(Color.RED);
 //			g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+//
+//			final int SPLIT = 15;
+//
+//			for (int i = 0; i < (getWidth() + getHeight()) / SPLIT; i++) {
+//				g2d.drawLine(0, i * SPLIT, i * SPLIT, 0);
+//				g2d.drawLine(0, getHeight() - (i * SPLIT), i * SPLIT, getHeight());
+//			}
 
 			g2d.setClip(new Rectangle2D.Double(0, 0, renderSize.width, renderSize.height));
 
@@ -237,18 +244,17 @@ public class InfoFrame extends JWindow {
 		private void drawGUIElement(Graphics2D g2d, int slot, String name, int x) {
 			g2d.setColor(textColor);
 			g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
-			drawCenteredText(g2d, name, x + offset - 5, y + 15, 50);
+			drawCenteredText(g2d, name, x + offset - 5, y + 15);
 			g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 10));
 
 			ClipItem last = Clipboard.getLast(slot);
 
-			drawCenteredText(g2d, last == null ? "EMPTY" : last.getType().getDisplayName(), x, y + height - 5, 50);
+			drawCenteredText(g2d, last == null ? "EMPTY" : last.getType().getDisplayName(), x, y + height - 5);
 		}
 
-		@SuppressWarnings("SameParameterValue")
-		private void drawCenteredText(Graphics2D g2d, String str, int x, int y, int width) {
+		private void drawCenteredText(Graphics2D g2d, String str, int x, int y) {
 			int strWidth = g2d.getFontMetrics().stringWidth(str);
-			g2d.drawString(str, x + ((width / 2) - (strWidth / 2)), y);
+			g2d.drawString(str, x + 25 - strWidth / 2, y);
 		}
 
 	}
