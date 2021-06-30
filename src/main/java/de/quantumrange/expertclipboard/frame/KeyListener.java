@@ -7,6 +7,9 @@ import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
 import org.jnativehook.keyboard.NativeKeyListener;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
+
 import static org.jnativehook.NativeInputEvent.*;
 
 public class KeyListener implements NativeKeyListener {
@@ -32,20 +35,25 @@ public class KeyListener implements NativeKeyListener {
 				Clipboard.undo();
 			} else if (e.getKeyCode() == NativeKeyEvent.VC_R) {
 				Clipboard.redo();
-			}
-
-			else Main.frame.open();
+			} else if (e.getKeyCode() == NativeKeyEvent.VC_H) {
+				Main.frame.close();
+				if (Main.historyFrame.isOpen()) Main.historyFrame.close();
+				else Main.historyFrame.open(Clipboard.currentSlot);
+			} else Main.frame.open();
 
 			int num = e.getKeyCode() - 1;
 
 			if (num > 0 && num <= 9) {
 				Main.frame.updateSelected(num);
+				Main.historyFrame.close();
 			}
 		} else if (e.getKeyCode() == NativeKeyEvent.VC_F5) {
 			try {
 				GlobalScreen.unregisterNativeHook();
 				System.exit(0);
 			} catch (NativeHookException ignored) { }
+		} else {
+			Main.historyFrame.pressKey(e.getKeyCode());
 		}
 	}
 }

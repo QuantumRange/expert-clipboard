@@ -2,6 +2,7 @@ package de.quantumrange.expertclipboard.frame;
 
 import de.quantumrange.expertclipboard.clip.ClipItem;
 import de.quantumrange.expertclipboard.clip.Clipboard;
+import de.quantumrange.expertclipboard.util.FrameUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -50,8 +51,12 @@ public class InfoFrame extends JWindow {
 	public void open() {
 		this.lastInteraction = System.currentTimeMillis();
 
+		setVisible(true);
+
 		if (animationState != 2 && animationState != 1) {
 			if (animationState == 0) panel.repaint();
+			System.out.println("animationState = " + animationState);
+
 			animationState = 1;
 			animations[0] = new Animation(
 					panel.renderSize.width,
@@ -71,7 +76,10 @@ public class InfoFrame extends JWindow {
 					0,
 					2000,
 					value -> panel.renderSize.width = value,
-					success -> animationState = 0, Animation.AnimationType.EASE_IN_OUT_BOUNCE);
+					success -> {
+						animationState = 0;
+						setVisible(false);
+					}, Animation.AnimationType.EASE_IN_OUT_BOUNCE);
 			animations[0].start();
 		}
 	}
@@ -147,7 +155,7 @@ public class InfoFrame extends JWindow {
 
 //			g2d.setColor(Color.RED);
 //			g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
-//
+
 //			final int SPLIT = 15;
 //
 //			for (int i = 0; i < (getWidth() + getHeight()) / SPLIT; i++) {
@@ -157,14 +165,7 @@ public class InfoFrame extends JWindow {
 
 			g2d.setClip(new Rectangle2D.Double(0, 0, renderSize.width, renderSize.height));
 
-			for (int i = 0; i < animations.length; i++) {
-				if (animations[i] != null) {
-					if (animations[i].isDone()) {
-						animations[i].stop();
-						animations[i] = null;
-					} else animations[i].update();
-				}
-			}
+			FrameUtil.updateAnimations(animations);
 
 			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

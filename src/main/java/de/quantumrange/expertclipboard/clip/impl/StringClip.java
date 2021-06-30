@@ -1,6 +1,6 @@
 package de.quantumrange.expertclipboard.clip.impl;
 
-import de.quantumrange.expertclipboard.FileUtil;
+import de.quantumrange.expertclipboard.util.FileUtil;
 import de.quantumrange.expertclipboard.clip.ClipType;
 
 import java.awt.*;

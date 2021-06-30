@@ -1,10 +1,7 @@
 package de.quantumrange.expertclipboard;
 
 import de.quantumrange.expertclipboard.clip.Clipboard;
-import de.quantumrange.expertclipboard.frame.InfoFrame;
-import de.quantumrange.expertclipboard.frame.KeyListener;
-import de.quantumrange.expertclipboard.frame.Notify;
-import de.quantumrange.expertclipboard.frame.NotifyFrame;
+import de.quantumrange.expertclipboard.frame.*;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
@@ -21,6 +18,7 @@ public class Main {
 
 	public static InfoFrame frame;
 	public static NotifyFrame notifyFrame;
+	public static HistoryFrame historyFrame;
 	public static Thread timer;
 
 	public static void main(String[] args) {
@@ -30,6 +28,7 @@ public class Main {
 
 		frame = new InfoFrame(1000, 450);
 		notifyFrame = new NotifyFrame(400, 1500);
+		historyFrame = new HistoryFrame(520, 400);
 
 		try {
 			Toolkit.getDefaultToolkit().getSystemClipboard().addFlavorListener(e -> Clipboard.update());

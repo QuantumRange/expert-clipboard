@@ -1,12 +1,11 @@
 package de.quantumrange.expertclipboard.clip;
 
-import de.quantumrange.expertclipboard.FileUtil;
+import de.quantumrange.expertclipboard.util.FileUtil;
 import de.quantumrange.expertclipboard.Main;
 import de.quantumrange.expertclipboard.clip.impl.EmptyFlavor;
 import de.quantumrange.expertclipboard.frame.Notify;
 
 import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -71,7 +70,13 @@ public class Clipboard {
 		}
 
 		if (item == null) return;
-		if (item.getType() != ClipItem.ClipItemType.STRING) return;
+
+		if (item.getType() != getLast().getType()) {
+			update();
+			return;
+		}
+
+		if (item.getType() == ClipItem.ClipItemType.IMAGE) return;
 
 		if (!item.getObj().getData().equals(getLast().getObj().getData())) {
 			update();
@@ -83,11 +88,7 @@ public class Clipboard {
 			ClipItem item = getClipboard();
 
 			if (item == null) return;
-			if (item.getType() == ClipItem.ClipItemType.STRING && getLast() != null) {
-				if (item.getObj().getData().equals(getLast().getObj().getData())) {
-					return;
-				}
-			}
+			if (item.getType() != ClipItem.ClipItemType.IMAGE && getLast() != null) if (item.getObj().getData().equals(getLast().getObj().getData())) return;
 
 			int i = slotIndexes[currentSlot];
 			slotIndexes[currentSlot] = (i + 1) % MAX_HISTORY;
@@ -120,7 +121,9 @@ public class Clipboard {
 			for (ClipItem.ClipItemType type : ClipItem.ClipItemType.values()) {
 				try {
 					if (clipboard.isDataFlavorAvailable(type.getFlavor())) {
-						item = new ClipItem(type.getToClip().apply(clipboard.getContents(null).getTransferData(type.getFlavor())), type);
+						item = new ClipItem(LocalDateTime.now(),
+										type.getToClip().apply(clipboard.getContents(null).getTransferData(type.getFlavor())),
+										type);
 						return item;
 					}
 				} catch (IllegalStateException ignored) { }
@@ -158,7 +161,8 @@ public class Clipboard {
 			File dataFile = new File(dir, "data.txt");
 			FileUtil.write(dataFile, Arrays.stream(slots)
 					.map(clipItems -> Arrays.stream(clipItems)
-							.map(clipItem -> clipItem == null ? "NULL" : clipItem.getType().name())
+							.map(clipItem -> clipItem == null ? "NULL" :
+									clipItem.getType().name() + "|" + clipItem.getDateTime().toString())
 							.collect(Collectors.joining(";")))
 					.collect(Collectors.joining("\n")));
 
@@ -192,16 +196,22 @@ public class Clipboard {
 
 		File dataFile = new File(dir, "data.txt");
 		ClipItem.ClipItemType[][] clipItemTypes = new ClipItem.ClipItemType[9][MAX_HISTORY];
+		LocalDateTime[][] clipItemDates = new LocalDateTime[9][MAX_HISTORY];
 		String[] lines = FileUtil.read(dataFile).split("\n");
 
 		for (int x = 0; x < lines.length; x++) {
 			String[] entries = lines[x].split(";");
 
 			for (int y = 0; y < entries.length; y++) {
-				String dat = entries[y];
+				if (entries[y].equals("NULL")) clipItemTypes[x][y] = null;
+				else {
+					String[] split = entries[y].split("\\|");
+					String dat = split[0];
+					String date = split[1];
 
-				if (dat.equals("NULL")) clipItemTypes[x][y] = null;
-				else clipItemTypes[x][y] = ClipItem.ClipItemType.valueOf(dat);
+					clipItemDates[x][y] = LocalDateTime.parse(date);
+					clipItemTypes[x][y] = ClipItem.ClipItemType.valueOf(dat);
+				}
 			}
 		}
 
@@ -218,7 +228,7 @@ public class Clipboard {
 
 					type.readFromFile(file);
 
-					slots[x][y] = new ClipItem(type, t);
+					slots[x][y] = new ClipItem(clipItemDates[x][y], type, t);
 				} else slots[x][y] = null;
 			}
 		}

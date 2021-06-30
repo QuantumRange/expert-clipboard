@@ -39,6 +39,7 @@ public class ImageClip extends ClipType<BufferedImage> {
 	public void writeToFile(File file) {
 		try {
 			BufferedImage image = getData();
+
 			BufferedImage exportImage = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_RGB);
 
 			Graphics2D g2d = exportImage.createGraphics();

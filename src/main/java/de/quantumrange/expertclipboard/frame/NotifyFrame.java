@@ -10,7 +10,7 @@ public class NotifyFrame extends JWindow {
 
 	private static final int NOTIFY_HEIGHT = 35,
 							 NOTIFY_SPACE = 10;
-	private List<Notify> notifies;
+	private final List<Notify> notifies;
 	private final NotifyPanel panel;
 	private Animation slideUp;
 
@@ -33,10 +33,14 @@ public class NotifyFrame extends JWindow {
 
 		slideUp = new Animation(-(NOTIFY_HEIGHT + NOTIFY_SPACE), 0, 500, val -> {
 			panel.offsetY = val;
-		}, success -> { });
+		}, success -> {
+			if (notifies.isEmpty()) {
+				setLocation(50_000, 50_000);
+			}
+		});
 		slideUp.start();
 
-		synchronized (notify) {
+		synchronized (notifies) {
 			notifies.add(0, notify);
 		}
 
@@ -76,8 +80,12 @@ public class NotifyFrame extends JWindow {
 //			g2d.setColor(Color.RED);
 //			g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
 
-			List<Notify> list = notifies.stream().filter(notify -> !notify.isDone()).collect(Collectors.toList());
-			notifies = list;
+			List<Notify> list = new ArrayList<>(notifies).stream().filter(notify -> !notify.isDone()).collect(Collectors.toList());
+
+			synchronized (notifies) {
+				notifies.clear();
+				notifies.addAll(list);
+			}
 
 			if (slideUp != null) {
 				if (slideUp.isDone()) {
@@ -88,8 +96,8 @@ public class NotifyFrame extends JWindow {
 
 			int y = 0;
 
-			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
 
 			g2d.setColor(Color.WHITE);
 			g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 18));

@@ -1,7 +1,6 @@
 package de.quantumrange.expertclipboard.clip.impl;
 
-import de.quantumrange.expertclipboard.FileUtil;
-import de.quantumrange.expertclipboard.Main;
+import de.quantumrange.expertclipboard.util.FileUtil;
 import de.quantumrange.expertclipboard.clip.ClipType;
 
 import java.awt.*;
@@ -9,7 +8,6 @@ import java.awt.datatransfer.DataFlavor;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class FileClip extends ClipType<List<File>> {

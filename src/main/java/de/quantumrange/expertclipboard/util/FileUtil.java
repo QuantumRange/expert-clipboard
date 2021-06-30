@@ -1,4 +1,4 @@
-package de.quantumrange.expertclipboard;
+package de.quantumrange.expertclipboard.util;
 
 import java.io.*;
 
