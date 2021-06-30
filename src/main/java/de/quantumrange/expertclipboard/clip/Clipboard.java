@@ -1,5 +1,7 @@
 package de.quantumrange.expertclipboard.clip;
 
+import de.quantumrange.expertclipboard.clip.impl.EmptyFlavor;
+
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.time.LocalDateTime;
@@ -21,9 +23,28 @@ public class Clipboard {
 		return slots[slot][slotIndexes[slot]];
 	}
 
+	public static void redo() {
+		int index = (slotIndexes[currentSlot] + 1) % MAX_HISTORY;
+
+		if (slots[currentSlot][index] != null) {
+
+		}
+	}
+
+	public static void undo() {
+		int index = slotIndexes[currentSlot] - 1;
+		if (index < 0) {
+			index = MAX_HISTORY - 1;
+		}
+
+		if (slots[currentSlot][index] != null) {
+
+		}
+	}
+
 	public static void update() {
 		if (!disableCopy) {
-			ClipItem item = getCurrent();
+			ClipItem item = getClipboard();
 
 			if (item == null) return;
 			int i = slotIndexes[currentSlot];
@@ -33,45 +54,46 @@ public class Clipboard {
 		}
 	}
 
-	public static void switchToClipboard() {
+	public static void switchToClipboard(int slot) {
 		disableCopy = true;
 
-		ClipItem item = getCurrent();
-		setCurrent(item);
+		ClipItem item = getLast(slot);
+		currentSlot = slot;
+		setClipboard(item);
 
 		disableCopy = false;
 	}
 
-	public static ClipItem getCurrent() {
+	public static ClipItem getClipboard() {
 		try {
 			java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 
-			ClipItem item = null;
+			ClipItem item;
 
 			for (ClipItem.ClipItemType type : ClipItem.ClipItemType.values()) {
-				if (clipboard.isDataFlavorAvailable(type.getType())) {
-					item = new ClipItem(LocalDateTime.now(), clipboard.getContents(null).getTransferData(type.getType()), type);
-				}
-			}
+				try {
+					if (clipboard.isDataFlavorAvailable(type.getFlavor())) {
+						item = new ClipItem(LocalDateTime.now(),
+								type.getToClip().apply(clipboard.getContents(null).getTransferData(type.getFlavor())),
+								type);
 
-			return item;
+						return item;
+					}
+				} catch (IllegalStateException ignored) { }
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 
-	public static void setCurrent(ClipItem item) {
+	public static void setClipboard(ClipItem item) {
 		if (item != null) {
 			Toolkit.getDefaultToolkit()
 					.getSystemClipboard()
-					.setContents(item.getType()
-							.getTransferable()
-							.apply(item.getObj()),null);
-			System.out.println("Save: " + item);
+					.setContents(item.getObj(), null);
 		} else {
-			System.out.println("Nope");
-			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(""), null);
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new EmptyFlavor(), null);
 		}
 	}
 

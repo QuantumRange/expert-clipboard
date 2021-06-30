@@ -1,14 +1,14 @@
 package de.quantumrange.expertclipboard.clip;
 
 import de.quantumrange.expertclipboard.FileUtil;
-import de.quantumrange.expertclipboard.clip.impl.ImageSelection;
+import de.quantumrange.expertclipboard.clip.impl.ImageClip;
+import de.quantumrange.expertclipboard.clip.impl.StringClip;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
@@ -19,10 +19,10 @@ import java.util.function.*;
 public class ClipItem {
 
 	private LocalDateTime createDate;
-	private final Object obj;
+	private final ClipType<?> obj;
 	private final ClipItemType type;
 
-	public ClipItem(LocalDateTime createDate, Object obj, ClipItemType type) {
+	public ClipItem(LocalDateTime createDate, ClipType<?> obj, ClipItemType type) {
 		this.createDate = createDate;
 		this.obj = obj;
 		this.type = type;
@@ -30,60 +30,29 @@ public class ClipItem {
 
 	public enum ClipItemType {
 
-		STRING("Text",
-				DataFlavor.stringFlavor,
-				(obj, file) -> {
-				String data = (String) obj;
-
-				FileUtil.write(file, data);
-				}, FileUtil::read, obj -> new StringSelection((String) obj)),
-		IMAGE("Image",
-				DataFlavor.imageFlavor,
-				(obj, file) -> {
-					Image data = (Image) obj;
-					try {
-						ImageIO.write((RenderedImage) data, "PNG", file);
-					} catch (IOException ignore) { }
-				}, file -> {
-					try {
-						return ImageIO.read(file);
-					} catch (IOException ignore) { }
-					return null;
-				}, obj -> new ImageSelection((Image) obj));
+		STRING("Text", DataFlavor.stringFlavor, StringClip::new),
+		IMAGE("Image", DataFlavor.imageFlavor, ImageClip::new);
 
 		private final String displayName;
-		private final DataFlavor type;
-		private final BiConsumer<Object, File> save;
-		private final Function<File, Object> load;
-		private final Function<Object, Transferable> transferable;
+		private final DataFlavor flavor;
+		private final Function<Object, ClipType<?>> toClip;
 
-		ClipItemType(String displayName, DataFlavor type, BiConsumer<Object, File> save, Function<File, Object> load,
-		             Function<Object, Transferable> transferable) {
+		ClipItemType(String displayName, DataFlavor flavor, Function<Object, ClipType<?>> toClip) {
 			this.displayName = displayName;
-			this.type = type;
-			this.save = save;
-			this.load = load;
-			this.transferable = transferable;
-		}
-
-		public Function<Object, Transferable> getTransferable() {
-			return transferable;
+			this.flavor = flavor;
+			this.toClip = toClip;
 		}
 
 		public String getDisplayName() {
 			return displayName;
 		}
 
-		public DataFlavor getType() {
-			return type;
+		public DataFlavor getFlavor() {
+			return flavor;
 		}
 
-		public BiConsumer<Object, File> getSave() {
-			return save;
-		}
-
-		public Function<File, Object> getLoad() {
-			return load;
+		public Function<Object, ClipType<?>> getToClip() {
+			return toClip;
 		}
 	}
 
@@ -91,12 +60,12 @@ public class ClipItem {
 		return createDate;
 	}
 
-	public Object getObj() {
-		return obj;
-	}
-
 	public ClipItemType getType() {
 		return type;
+	}
+
+	public ClipType<?> getObj() {
+		return obj;
 	}
 
 	@Override

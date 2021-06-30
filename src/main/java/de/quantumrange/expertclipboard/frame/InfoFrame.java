@@ -21,6 +21,11 @@ public class InfoFrame extends JWindow {
 	 * 3 = Close
 	 */
 	protected int originalWidth, originalHeight, animationState;
+	/**
+	 * 0 = Open/Close
+	 * 1 = Extra Informations
+	 * 2 = selectedElementSlider
+	 */
 	protected Animation[] animations;
 	private final InfoPanel panel;
 	private int selectedElement;
@@ -29,7 +34,7 @@ public class InfoFrame extends JWindow {
 		this.originalWidth = width;
 		this.originalHeight = height;
 		this.animationState = 0;
-		this.animations = new Animation[2];
+		this.animations = new Animation[3];
 
 		setSize(width, height);
 		add(panel = new InfoPanel(width, height));
@@ -72,9 +77,19 @@ public class InfoFrame extends JWindow {
 		int slot = selected - 1;
 
 		if (this.selectedElement != slot) {
-			Clipboard.currentSlot = slot;
-			Clipboard.switchToClipboard();
+			Clipboard.switchToClipboard(slot);
 		}
+
+		animations[2] = new Animation(panel.sliderX, slot * 50, 500, val -> panel.sliderX = val, success -> { });
+		animations[2].start();
+
+		animations[1] = new Animation(
+				panel.renderSize.height,
+				Math.min(50 + Clipboard.getLast().getObj().getHeight(), 400),
+				1500,
+				value -> panel.renderSize.width = value,
+				success -> animationState = 2);
+		animations[1].start();
 
 		this.selectedElement = slot;
 	}
@@ -91,6 +106,7 @@ public class InfoFrame extends JWindow {
 
 	private class InfoPanel extends JPanel {
 
+		protected int sliderX;
 		protected Dimension renderSize;
 
 		public InfoPanel(int width, int height) {
@@ -98,6 +114,7 @@ public class InfoFrame extends JWindow {
 			setOpaque(false);
 			setPreferredSize(new Dimension(width, height));
 
+			sliderX = 0;
 			renderSize.width = 0;
 
 			repaint();
@@ -109,11 +126,13 @@ public class InfoFrame extends JWindow {
 
 			g2d.setClip(new Rectangle2D.Double(0, 0, renderSize.width, renderSize.height));
 
-			if (animations[0] != null) {
-				if (animations[0].isDone()) {
-					animations[0].stop();
-					animations[0] = null;
-				} else animations[0].update();
+			for (int i = 0; i < animations.length; i++) {
+				if (animations[i] != null) {
+					if (animations[i].isDone()) {
+						animations[i].stop();
+						animations[i] = null;
+					} else animations[i].update();
+				}
 			}
 
 			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
@@ -133,28 +152,44 @@ public class InfoFrame extends JWindow {
 			int offsetX = (getWidth() / 2) - (450 / 2);
 
 			for (int i = 0; i < 9; i++) {
-				drawGUIElement(g2d, i, String.valueOf(i + 1), offsetX + (i * 50), i == selected);
+				drawGUIBackground(g2d, offsetX + (i * 50));
+			}
+
+			int nX = offsetX + sliderX;
+			g2d.setColor(selectedColor);
+			drawBackground(g2d, nX);
+
+			for (int i = 0; i < 9; i++) {
+				drawGUIElement(g2d, i, String.valueOf(i + 1), offsetX + (i * 50));
 			}
 		}
 
-		private void drawGUIElement(Graphics2D g2d, int slot, String name, int x, boolean selected) {
-			final int width = 50,
-					height = 50,
-					y = 0,
-					offset = 15;
+		public static final Color backgroundColor = new Color(255, 255, 255),
+								  textColor = new Color(0, 0, 0),
+								  selectedColor = new Color(88, 101, 242);
 
-			final Color backgroundColor = new Color(255, 255, 255),
-						textColor = new Color(0, 0, 0),
-						selectedColor = new Color(88, 101, 242);
+		private static final int width = 50,
+				                 height = 50,
+				                 y = 0,
+				                 offset = 15;
 
-			g2d.setColor(selected ? selectedColor : backgroundColor);
+		private void drawGUIBackground(Graphics2D g2d, int x) {
+			g2d.setColor(backgroundColor);
+			drawBackground(g2d, x);
+		}
 
+		private void drawBackground(Graphics2D g2d, int x) {
 			Polygon p = new Polygon();
 			p.addPoint(x + offset, y);
 			p.addPoint(x, y + height);
 			p.addPoint(x + width, y + height);
 			p.addPoint(x + width + offset, y);
 			g2d.fillPolygon(p);
+		}
+
+		private void drawGUIElement(Graphics2D g2d, int slot, String name, int x) {
+
+
 
 			g2d.setColor(textColor);
 			g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
@@ -171,15 +206,6 @@ public class InfoFrame extends JWindow {
 			int strWidth = g2d.getFontMetrics().stringWidth(str);
 			g2d.drawString(str, x + ((width / 2) - (strWidth / 2)), y);
 		}
-
-//		private String getClipboardAsString() {
-//			try {
-//				return (String) Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null).getTransferData(DataFlavor.stringFlavor);
-//			} catch (UnsupportedFlavorException | IOException e) {
-//				e.printStackTrace();
-//			}
-//			return "<empty>";
-//		}
 
 	}
 }

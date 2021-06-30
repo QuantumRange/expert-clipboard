@@ -1,0 +1,6 @@
+- UNDO
+- REDO
+- Animation Bug
+- Save
+- Load
+- customization of the key binds
