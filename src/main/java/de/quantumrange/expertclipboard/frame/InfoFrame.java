@@ -56,9 +56,9 @@ public class InfoFrame extends JWindow {
 			animations[0] = new Animation(
 					panel.renderSize.width,
 					originalWidth,
-					1500,
+					1000,
 					value -> panel.renderSize.width = value,
-					success -> animationState = 2);
+					success -> animationState = 2, Animation.AnimationType.EASE_IN_OUT_BOUNCE);
 			animations[0].start();
 		}
 	}
@@ -69,11 +69,33 @@ public class InfoFrame extends JWindow {
 			animations[0] = new Animation(
 					panel.renderSize.width,
 					0,
-					1500,
+					2000,
 					value -> panel.renderSize.width = value,
-					success -> animationState = 0);
+					success -> animationState = 0, Animation.AnimationType.EASE_IN_OUT_BOUNCE);
 			animations[0].start();
 		}
+	}
+
+	public void updateClipboard() {
+		animateHeight();
+	}
+
+	private void animateHeight() {
+		if (animationState == 3) open();
+
+		lastInteraction = System.currentTimeMillis();
+
+		int height = Clipboard.getLast() != null ? Clipboard.getLast().getObj().getHeight() : 0;
+
+		int prefHeight = Math.min(50 + height, 400);
+
+		animations[1] = new Animation(
+				panel.renderSize.height,
+				prefHeight,
+				1000,
+				value -> panel.renderSize.height = value,
+				success -> animationState = 2);
+		animations[1].start();
 	}
 
 	public void updateSelected(int selected) {
@@ -88,17 +110,7 @@ public class InfoFrame extends JWindow {
 		animations[2] = new Animation(panel.sliderX, slot * 50, 500, val -> panel.sliderX = val, success -> { });
 		animations[2].start();
 
-		int height = Clipboard.getLast() != null ? Clipboard.getLast().getObj().getHeight() : 0;
-
-		int prefHeight = Math.min(50 + height, 400);
-
-		animations[1] = new Animation(
-				panel.renderSize.height,
-				prefHeight,
-				1500,
-				value -> panel.renderSize.height = value,
-				success -> animationState = 2);
-		animations[1].start();
+		animateHeight();
 
 		this.selectedElement = slot;
 	}
@@ -186,7 +198,7 @@ public class InfoFrame extends JWindow {
 
 			ClipItem last = Clipboard.getLast();
 
-			if (last != null && width != 0 && height != 0) {
+			if (last != null && width > 0 && height > 0) {
 				BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 				Graphics2D graphics2D = img.createGraphics();
 

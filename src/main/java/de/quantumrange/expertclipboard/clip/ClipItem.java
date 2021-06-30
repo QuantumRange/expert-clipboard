@@ -1,6 +1,7 @@
 package de.quantumrange.expertclipboard.clip;
 
 import de.quantumrange.expertclipboard.FileUtil;
+import de.quantumrange.expertclipboard.clip.impl.FileClip;
 import de.quantumrange.expertclipboard.clip.impl.ImageClip;
 import de.quantumrange.expertclipboard.clip.impl.StringClip;
 
@@ -31,6 +32,7 @@ public class ClipItem {
 	public enum ClipItemType {
 
 		STRING("Text", DataFlavor.stringFlavor, StringClip::new),
+		FILE("File", DataFlavor.javaFileListFlavor, FileClip::new),
 		IMAGE("Image", DataFlavor.imageFlavor, ImageClip::new);
 
 		private final String displayName;

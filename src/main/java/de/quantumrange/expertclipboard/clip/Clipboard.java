@@ -1,11 +1,16 @@
 package de.quantumrange.expertclipboard.clip;
 
+import de.quantumrange.expertclipboard.FileUtil;
+import de.quantumrange.expertclipboard.Main;
 import de.quantumrange.expertclipboard.clip.impl.EmptyFlavor;
 import de.quantumrange.expertclipboard.frame.Notify;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class Clipboard {
 
@@ -72,11 +77,19 @@ public class Clipboard {
 			ClipItem item = getClipboard();
 
 			if (item == null) return;
+			if (item.getType() == ClipItem.ClipItemType.STRING && getLast() != null) {
+				if (item.getObj().getData().equals(getLast().getObj().getData())) {
+					return;
+				}
+			}
+
 			int i = slotIndexes[currentSlot];
 			slotIndexes[currentSlot] = (i + 1) % MAX_HISTORY;
 
 			slots[currentSlot][slotIndexes[currentSlot]] = item;
 
+			Main.frame.updateClipboard();
+			save(new File("./"));
 //			Notify.success("The %s was stored in clipboard.".formatted(getLast().getType().getDisplayName()));
 		}
 	}
@@ -123,6 +136,20 @@ public class Clipboard {
 		} else {
 			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new EmptyFlavor(), null);
 		}
+	}
+
+	public static void save(File dir) {
+		File indexFile = new File(dir, "index.txt");
+
+		FileUtil.write(indexFile, Arrays.stream(slotIndexes)
+						.mapToObj(String::valueOf)
+						.collect(Collectors.joining(":")));
+
+
+	}
+
+	public static void load(File dir) {
+
 	}
 
 }

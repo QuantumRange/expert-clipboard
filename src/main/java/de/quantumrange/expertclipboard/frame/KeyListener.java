@@ -41,7 +41,7 @@ public class KeyListener implements NativeKeyListener {
 			if (num > 0 && num <= 9) {
 				Main.frame.updateSelected(num);
 			}
-		} else if (e.getKeyCode() == NativeKeyEvent.VC_TAB) {
+		} else if (e.getKeyCode() == NativeKeyEvent.VC_F5) {
 			try {
 				GlobalScreen.unregisterNativeHook();
 				System.exit(0);
