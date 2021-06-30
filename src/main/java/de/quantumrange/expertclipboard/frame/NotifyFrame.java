@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 
 public class NotifyFrame extends JWindow {
 
+	private static final int NOTIFY_HEIGHT = 35,
+							 NOTIFY_SPACE = 10;
 	private List<Notify> notifies;
 	private final NotifyPanel panel;
 	private Animation slideUp;
@@ -29,12 +31,14 @@ public class NotifyFrame extends JWindow {
 	public void add(Notify notify) {
 		boolean empty = notifies.isEmpty();
 
-		slideUp = new Animation(-40, 0, 500, val -> {
+		slideUp = new Animation(-(NOTIFY_HEIGHT + NOTIFY_SPACE), 0, 500, val -> {
 			panel.offsetY = val;
 		}, success -> { });
 		slideUp.start();
 
-		notifies.add(notify);
+		synchronized (notify) {
+			notifies.add(0, notify);
+		}
 
 		if (empty) {
 			panel.repaint();
@@ -44,7 +48,8 @@ public class NotifyFrame extends JWindow {
 	private Point calculatePerfectPosition() {
 		Point point = MouseInfo.getPointerInfo().getLocation();
 
-		return new Point(point.x - (panel.getWidth() / 2), point.y + 15);
+//		return new Point(point.x - (panel.getWidth() / 2), point.y + 15);
+		return new Point(point.x, point.y + 15);
 	}
 
 	protected void updateMouseWindowPosition() {
@@ -56,7 +61,7 @@ public class NotifyFrame extends JWindow {
 		private int offsetY;
 
 		public NotifyPanel(int width, int height) {
-			this.offsetY = -40;
+			this.offsetY = -NOTIFY_HEIGHT;
 
 			setOpaque(false);
 			setPreferredSize(new Dimension(width, height));
@@ -68,12 +73,31 @@ public class NotifyFrame extends JWindow {
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 
-			notifies = notifies.stream().filter(notify -> !notify.isDone()).collect(Collectors.toList());
+			List<Notify> list = notifies.stream().filter(notify -> !notify.isDone()).collect(Collectors.toList());
+			notifies = list;
 
-			if ()
+			if (slideUp != null) {
+				if (slideUp.isDone()) {
+					slideUp.stop();
+					slideUp = null;
+				} else slideUp.update();
+			}
 
-			for ()
+			int y = 0;
 
+			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+			g2d.setColor(Color.WHITE);
+			g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 18));
+
+			for (Notify notify : list) {
+				notify.render(g2d, 0, offsetY + y, getWidth(), NOTIFY_HEIGHT);
+
+				y += NOTIFY_HEIGHT + NOTIFY_SPACE;
+			}
+
+			updateMouseWindowPosition();
 			if (!notifies.isEmpty()) repaint();
 		}
 

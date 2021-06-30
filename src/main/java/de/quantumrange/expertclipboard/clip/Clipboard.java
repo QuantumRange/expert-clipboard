@@ -1,6 +1,7 @@
 package de.quantumrange.expertclipboard.clip;
 
 import de.quantumrange.expertclipboard.clip.impl.EmptyFlavor;
+import de.quantumrange.expertclipboard.frame.Notify;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -27,7 +28,11 @@ public class Clipboard {
 		int index = (slotIndexes[currentSlot] + 1) % MAX_HISTORY;
 
 		if (slots[currentSlot][index] != null) {
-
+			slotIndexes[currentSlot] = index;
+			setClipboard(getLast());
+			Notify.success("Redo successfully");
+		} else {
+			Notify.error("You can't go back any further.");
 		}
 	}
 
@@ -38,7 +43,27 @@ public class Clipboard {
 		}
 
 		if (slots[currentSlot][index] != null) {
+			slotIndexes[currentSlot] = index;
+			setClipboard(getLast());
+			Notify.success("Undo successfully");
+		} else {
+			Notify.error("You can't go back any further.");
+		}
+	}
 
+	public static synchronized void testClipboard() {
+		ClipItem item = getClipboard();
+
+		if (item != null && getLast() == null) {
+			update();
+			return;
+		}
+
+		if (item == null) return;
+		if (item.getType() != ClipItem.ClipItemType.STRING) return;
+
+		if (!item.getObj().getData().equals(getLast().getObj().getData())) {
+			update();
 		}
 	}
 
@@ -51,12 +76,15 @@ public class Clipboard {
 			slotIndexes[currentSlot] = (i + 1) % MAX_HISTORY;
 
 			slots[currentSlot][slotIndexes[currentSlot]] = item;
+
+//			Notify.success("The %s was stored in clipboard.".formatted(getLast().getType().getDisplayName()));
 		}
 	}
 
 	public static void switchToClipboard(int slot) {
 		disableCopy = true;
 
+//		Notify.success("It has been switched to clipboard %d.".formatted(slot + 1));
 		ClipItem item = getLast(slot);
 		currentSlot = slot;
 		setClipboard(item);

@@ -30,9 +30,9 @@ public class ImageClip extends ClipType<BufferedImage> {
 
 	@Override
 	public void render(Graphics2D g2d, int width, int height) {
-		int cw = (int) ((double) width * (getData().getWidth() / (double) getData().getHeight()));
+		int cw = (int) ((double) height * (getData().getWidth() / (double) getData().getHeight()));
 
-		g2d.drawImage(getData(), 0, 0, cw, height, null);
+		g2d.drawImage(getData(), (width / 2) - (cw / 2), 0, cw, height, null);
 	}
 
 	@Override

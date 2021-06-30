@@ -23,10 +23,11 @@ public class KeyListener implements NativeKeyListener {
 
 	@Override
 	public void nativeKeyReleased(NativeKeyEvent e) {
-		System.out.println("Key Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()) + " with Modifiers: " + e.getModifiers());
-
 		if (e.getModifiers() == (ALT_L_MASK | SHIFT_L_MASK)) {
-			if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) Main.frame.close();
+			if (e.getKeyCode() == NativeKeyEvent.VC_ESCAPE) {
+				Main.frame.close();
+				Notify.success("Close GUI");
+			}
 			else if (e.getKeyCode() == NativeKeyEvent.VC_Z) {
 				Clipboard.undo();
 			} else if (e.getKeyCode() == NativeKeyEvent.VC_R) {

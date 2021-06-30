@@ -20,6 +20,11 @@ public class Notify {
 		g2d.setColor(new Color(44, 47, 51));
 		g2d.fillRect(x, y, width, height);
 		g2d.setColor(color);
+		int w1 = (int) (width * 0.02);
+		g2d.fillRect(x, y, w1, height);
+
+		g2d.setColor(Color.WHITE);
+		g2d.drawString(message, w1 + 10, (int) (y + height * 0.7));
 	}
 
 	public boolean isDone() {

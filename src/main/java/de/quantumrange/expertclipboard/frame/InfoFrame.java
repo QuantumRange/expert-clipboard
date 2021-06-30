@@ -5,13 +5,12 @@ import de.quantumrange.expertclipboard.clip.Clipboard;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class InfoFrame extends JWindow {
+
+	public static final int TIMEOUT_TIME = 3_000;
 
 	/**
 	 * animationSate
@@ -29,12 +28,14 @@ public class InfoFrame extends JWindow {
 	protected Animation[] animations;
 	private final InfoPanel panel;
 	private int selectedElement;
+	private long lastInteraction;
 
 	public InfoFrame(int width, int height) throws HeadlessException {
 		this.originalWidth = width;
 		this.originalHeight = height;
 		this.animationState = 0;
 		this.animations = new Animation[3];
+		lastInteraction = 0L;
 
 		setSize(width, height);
 		add(panel = new InfoPanel(width, height));
@@ -47,6 +48,8 @@ public class InfoFrame extends JWindow {
 	}
 
 	public void open() {
+		this.lastInteraction = System.currentTimeMillis();
+
 		if (animationState != 2 && animationState != 1) {
 			if (animationState == 0) panel.repaint();
 			animationState = 1;
@@ -74,6 +77,8 @@ public class InfoFrame extends JWindow {
 	}
 
 	public void updateSelected(int selected) {
+		this.lastInteraction = System.currentTimeMillis();
+
 		int slot = selected - 1;
 
 		if (this.selectedElement != slot) {
@@ -83,11 +88,15 @@ public class InfoFrame extends JWindow {
 		animations[2] = new Animation(panel.sliderX, slot * 50, 500, val -> panel.sliderX = val, success -> { });
 		animations[2].start();
 
+		int height = Clipboard.getLast() != null ? Clipboard.getLast().getObj().getHeight() : 0;
+
+		int prefHeight = Math.min(50 + height, 400);
+
 		animations[1] = new Animation(
 				panel.renderSize.height,
-				Math.min(50 + Clipboard.getLast().getObj().getHeight(), 400),
+				prefHeight,
 				1500,
-				value -> panel.renderSize.width = value,
+				value -> panel.renderSize.height = value,
 				success -> animationState = 2);
 		animations[1].start();
 
@@ -124,6 +133,9 @@ public class InfoFrame extends JWindow {
 		protected void paintComponent(Graphics g) {
 			Graphics2D g2d = (Graphics2D) g;
 
+//			g2d.setColor(Color.RED);
+//			g2d.drawRect(0, 0, getWidth() - 1, getHeight() - 1);
+
 			g2d.setClip(new Rectangle2D.Double(0, 0, renderSize.width, renderSize.height));
 
 			for (int i = 0; i < animations.length; i++) {
@@ -141,14 +153,16 @@ public class InfoFrame extends JWindow {
 			g2d.setColor(Color.WHITE);
 			g2d.setFont(new Font(Font.MONOSPACED, Font.BOLD, 25));
 
-			drawGUI(g2d, selectedElement);
+			drawGUI(g2d);
 
 			updateMouseWindowPosition();
+
+			if (lastInteraction + TIMEOUT_TIME < System.currentTimeMillis()) close();
 
 			if (animationState != 0) repaint();
 		}
 
-		private void drawGUI(Graphics2D g2d, int selected) {
+		private void drawGUI(Graphics2D g2d) {
 			int offsetX = (getWidth() / 2) - (450 / 2);
 
 			for (int i = 0; i < 9; i++) {
@@ -162,12 +176,33 @@ public class InfoFrame extends JWindow {
 			for (int i = 0; i < 9; i++) {
 				drawGUIElement(g2d, i, String.valueOf(i + 1), offsetX + (i * 50));
 			}
+
+			drawMoreInformation(g2d, offsetX, 50, 450, renderSize.height - 50);
+		}
+
+		private void drawMoreInformation(Graphics2D g2d, int x, int y, int width, int height) {
+			g2d.setColor(Color.WHITE);
+			g2d.fillRect(x, y, width, height);
+
+			ClipItem last = Clipboard.getLast();
+
+			if (last != null && width != 0 && height != 0) {
+				BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+				Graphics2D graphics2D = img.createGraphics();
+
+				graphics2D.setColor(Color.WHITE);
+				graphics2D.fillRect(0, 0, width, height);
+				graphics2D.setColor(Color.BLACK);
+				last.getObj().render(graphics2D, width, height);
+				graphics2D.dispose();
+
+				g2d.drawImage(img, x, y, width, height, null);
+			}
 		}
 
 		public static final Color backgroundColor = new Color(255, 255, 255),
 								  textColor = new Color(0, 0, 0),
 								  selectedColor = new Color(88, 101, 242);
-
 		private static final int width = 50,
 				                 height = 50,
 				                 y = 0,
@@ -188,9 +223,6 @@ public class InfoFrame extends JWindow {
 		}
 
 		private void drawGUIElement(Graphics2D g2d, int slot, String name, int x) {
-
-
-
 			g2d.setColor(textColor);
 			g2d.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
 			drawCenteredText(g2d, name, x + offset - 5, y + 15, 50);
