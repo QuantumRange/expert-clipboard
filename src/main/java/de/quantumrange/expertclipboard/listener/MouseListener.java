@@ -12,13 +12,20 @@ public class MouseListener implements NativeMouseMotionListener {
 
     @Override
     public void nativeMouseMoved(NativeMouseEvent event) {
+        if (!Main.frame.isVisible()) return;
+
         Point loc = Main.frame.getLocationOnScreen();
         Dimension size = Main.frame.getSize();
         for (int i = 0; i < Clipboard.slotIndexes.length; i++) {
             Polygon polygon = InfoFrame.InfoPanel.getPolygon((int) ((size.getWidth() / 2) - (450 / 2)), i);
 
+            Point point = event.getPoint();
+            point.translate(-loc.x, -loc.y);
+
+            if (polygon.contains(point)) {
+                System.out.println(i + 1);
+            }
         }
-        Clipboard.switchToClipboard(0);
     }
 
     @Override
