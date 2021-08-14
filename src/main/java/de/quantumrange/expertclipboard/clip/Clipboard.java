@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class Clipboard {
 
-	public static final int MAX_HISTORY = 20;
+	public static final int MAX_HISTORY = 50;
 
 	public static ClipItem[][] slots = new ClipItem[9][MAX_HISTORY];
 	public static int[] slotIndexes = new int[9];
