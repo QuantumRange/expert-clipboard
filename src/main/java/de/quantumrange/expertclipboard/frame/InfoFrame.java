@@ -63,6 +63,8 @@ public class InfoFrame extends JWindow {
 				value -> panel.renderSize.width = value,
 				success -> animationState = 2, Animation.AnimationType.EASE_IN_OUT_BOUNCE);
 		animations[0].start();
+
+		setLocation(calculatePerfectPosition());
 	}
 
 	public void close() {
