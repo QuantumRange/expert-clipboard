@@ -1,3 +1,0 @@
-- Save
-- Load
-- customization of the key binds
