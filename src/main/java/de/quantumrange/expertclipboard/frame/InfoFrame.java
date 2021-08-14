@@ -127,7 +127,7 @@ public class InfoFrame extends JWindow {
 	}
 
 	protected void updateMouseWindowPosition() {
-		setLocation(calculatePerfectPosition());
+		// setLocation(calculatePerfectPosition());
 	}
 
 	private class InfoPanel extends JPanel {
