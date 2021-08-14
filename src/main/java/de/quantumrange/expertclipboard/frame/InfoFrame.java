@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 public class InfoFrame extends JWindow {
 
-	public static final int TIMEOUT_TIME = 3_000;
+	public static final int TIMEOUT_TIME = 5_000;
 
 	/**
 	 * animationSate
@@ -101,6 +101,8 @@ public class InfoFrame extends JWindow {
 				value -> panel.renderSize.height = value,
 				success -> animationState = 2);
 		animations[1].start();
+
+		setLocation(calculatePerfectPosition());
 	}
 
 	public void updateSelected(int selected) {
