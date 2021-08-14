@@ -237,12 +237,22 @@ public class InfoFrame extends JWindow {
 		}
 
 		private void drawBackground(Graphics2D g2d, int x) {
+			g2d.fillPolygon(getPolygon(x));
+		}
+
+		public static Polygon getPolygon(int offset, int slot) {
+			int x = offset + (slot * 50);
+			return getPolygon(x);
+		}
+
+		private static Polygon getPolygon(int x) {
 			Polygon p = new Polygon();
 			p.addPoint(x + offset, y);
 			p.addPoint(x, y + height);
 			p.addPoint(x + width, y + height);
 			p.addPoint(x + width + offset, y);
-			g2d.fillPolygon(p);
+
+			return p;
 		}
 
 		private void drawGUIElement(Graphics2D g2d, int slot, String name, int x) {
