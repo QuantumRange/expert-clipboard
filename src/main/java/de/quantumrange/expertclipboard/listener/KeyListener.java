@@ -1,7 +1,8 @@
-package de.quantumrange.expertclipboard.frame;
+package de.quantumrange.expertclipboard.listener;
 
 import de.quantumrange.expertclipboard.Main;
 import de.quantumrange.expertclipboard.clip.Clipboard;
+import de.quantumrange.expertclipboard.frame.Notify;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;

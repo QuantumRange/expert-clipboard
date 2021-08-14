@@ -18,6 +18,10 @@ import java.util.stream.Collectors;
 
 public class HistoryFrame extends JWindow {
 
+	public static final Color BACKGROUND_COLOR  = new Color(88, 101, 242),
+			SELECTED_COLOR  = new Color(72, 81, 177),
+			EMPTY_COLOR     = new Color(120, 130, 245);
+
 	private final HistoryPanel panel;
 	private boolean isOpen;
 
@@ -149,10 +153,6 @@ public class HistoryFrame extends JWindow {
 
 			repaint();
 		}
-
-		public static final Color BACKGROUND_COLOR  = new Color(88, 101, 242),
-									SELECTED_COLOR  = new Color(72, 81, 177),
-									EMPTY_COLOR     = new Color(120, 130, 245);
 
 		@Override
 		protected void paintComponent(Graphics g) {

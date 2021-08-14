@@ -12,6 +12,9 @@ import java.awt.image.BufferedImage;
 public class InfoFrame extends JWindow {
 
 	public static final int TIMEOUT_TIME = 5_000;
+	public static final Color backgroundColor = new Color(255, 255, 255),
+			textColor = new Color(0, 0, 0),
+			selectedColor = new Color(88, 101, 242);
 
 	/**
 	 * animationSate
@@ -223,9 +226,7 @@ public class InfoFrame extends JWindow {
 			}
 		}
 
-		public static final Color backgroundColor = new Color(255, 255, 255),
-								  textColor = new Color(0, 0, 0),
-								  selectedColor = new Color(88, 101, 242);
+
 		private static final int width = 50,
 				                 height = 50,
 				                 y = 0,

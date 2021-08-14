@@ -2,15 +2,12 @@ package de.quantumrange.expertclipboard;
 
 import de.quantumrange.expertclipboard.clip.Clipboard;
 import de.quantumrange.expertclipboard.frame.*;
+import de.quantumrange.expertclipboard.listener.KeyListener;
+import de.quantumrange.expertclipboard.listener.MouseListener;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 
-import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.FlavorEvent;
-import java.awt.datatransfer.FlavorListener;
-import java.util.Random;
-import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -33,6 +30,7 @@ public class Main {
 		try {
 			Toolkit.getDefaultToolkit().getSystemClipboard().addFlavorListener(e -> Clipboard.update());
 			GlobalScreen.addNativeKeyListener(new KeyListener());
+			GlobalScreen.addNativeMouseMotionListener(new MouseListener());
 			GlobalScreen.registerNativeHook();
 		} catch (NativeHookException e) {
 			e.printStackTrace();
