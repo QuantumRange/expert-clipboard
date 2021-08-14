@@ -136,7 +136,7 @@ public class InfoFrame extends JWindow {
 		// setLocation(calculatePerfectPosition());
 	}
 
-	private class InfoPanel extends JPanel {
+	public class InfoPanel extends JPanel {
 
 		protected int sliderX;
 		protected Dimension renderSize;
