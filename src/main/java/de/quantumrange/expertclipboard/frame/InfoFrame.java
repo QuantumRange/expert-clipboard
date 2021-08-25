@@ -11,7 +11,7 @@ import java.awt.image.BufferedImage;
 
 public class InfoFrame extends JWindow {
 
-	public static final int TIMEOUT_TIME = 5_000;
+	public static final int TIMEOUT_TIME = 10_000;
 	public static final Color backgroundColor = new Color(255, 255, 255),
 			textColor = new Color(0, 0, 0),
 			selectedColor = new Color(88, 101, 242);
@@ -102,12 +102,10 @@ public class InfoFrame extends JWindow {
 		animations[1] = new Animation(
 				panel.renderSize.height,
 				prefHeight,
-				1000,
+				150,
 				value -> panel.renderSize.height = value,
 				success -> animationState = 2);
 		animations[1].start();
-
-		setLocation(calculatePerfectPosition());
 	}
 
 	public void updateSelected(int selected) {
@@ -119,7 +117,7 @@ public class InfoFrame extends JWindow {
 			Clipboard.switchToClipboard(slot);
 		}
 
-		animations[2] = new Animation(panel.sliderX, slot * 50, 500, val -> panel.sliderX = val, success -> { });
+		animations[2] = new Animation(panel.sliderX, slot * 50, 50, val -> panel.sliderX = val, success -> { });
 		animations[2].start();
 
 		animateHeight();

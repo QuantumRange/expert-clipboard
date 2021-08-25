@@ -23,7 +23,10 @@ public class MouseListener implements NativeMouseMotionListener {
             point.translate(-loc.x, -loc.y);
 
             if (polygon.contains(point)) {
-                System.out.println(i + 1);
+                if (Clipboard.currentSlot != i) {
+                    Clipboard.switchToClipboard(i);
+                    Main.frame.updateSelected(i + 1);
+                }
             }
         }
     }
