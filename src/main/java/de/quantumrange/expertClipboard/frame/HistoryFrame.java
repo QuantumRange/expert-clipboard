@@ -3,6 +3,7 @@ package de.quantumrange.expertClipboard.frame;
 import de.quantumrange.expertClipboard.clip.ClipItem;
 import de.quantumrange.expertClipboard.clip.Clipboard;
 import de.quantumrange.expertClipboard.util.FrameUtil;
+import org.jnativehook.keyboard.NativeKeyEvent;
 
 import javax.swing.*;
 import java.awt.*;

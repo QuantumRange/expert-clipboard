@@ -1,10 +1,15 @@
 package de.quantumrange.expertClipboard.frame;
 
+import de.quantumrange.expertClipboard.clip.ClipItem;
+import de.quantumrange.expertClipboard.clip.Clipboard;
+import de.quantumrange.expertClipboard.util.FrameUtil;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.datatransfer.Clipboard;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+
+import  de.quantumrange.expertClipboard.clip.Clipboard.*;
 
 public class InfoFrame extends JWindow {
 
@@ -111,7 +116,7 @@ public class InfoFrame extends JWindow {
 		int slot = selected - 1;
 
 		if (this.selectedElement != slot) {
-			Clipboard.switchToClipboard(slot);
+			de.quantumrange.expertClipboard.clip.Clipboard.switchToClipboard(slot);
 		}
 
 		animations[2] = new Animation(panel.sliderX, slot * 50, 50, val -> panel.sliderX = val, success -> { });

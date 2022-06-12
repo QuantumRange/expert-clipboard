@@ -4,7 +4,6 @@ import de.quantumrange.expertClipboard.clip.Clipboard;
 import de.quantumrange.expertClipboard.frame.HistoryFrame;
 import de.quantumrange.expertClipboard.frame.InfoFrame;
 import de.quantumrange.expertClipboard.frame.NotifyFrame;
-import de.lupus.copyCAT.frame.*;
 import de.quantumrange.expertClipboard.listener.KeyListener;
 import de.quantumrange.expertClipboard.listener.MouseListener;
 import org.jnativehook.GlobalScreen;
