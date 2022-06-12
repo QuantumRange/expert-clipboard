@@ -1,8 +1,8 @@
-package de.lupus.copyCAT.clip;
+package de.quantumrange.expertClipboard.clip;
 
-import de.lupus.copyCAT.clip.impl.FileClip;
-import de.lupus.copyCAT.clip.impl.ImageClip;
-import de.lupus.copyCAT.clip.impl.StringClip;
+import de.quantumrange.expertClipboard.clip.impl.FileClip;
+import de.quantumrange.expertClipboard.clip.impl.ImageClip;
+import de.quantumrange.expertClipboard.clip.impl.StringClip;
 
 import java.awt.datatransfer.DataFlavor;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package de.lupus.copyCAT.util;
+package de.quantumrange.expertClipboard.util;
 
 import java.io.*;
 

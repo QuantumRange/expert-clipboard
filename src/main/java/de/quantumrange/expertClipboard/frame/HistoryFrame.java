@@ -1,8 +1,8 @@
-package de.lupus.copyCAT.frame;
+package de.quantumrange.expertClipboard.frame;
 
-import de.lupus.copyCAT.clip.ClipItem;
-import de.lupus.copyCAT.clip.Clipboard;
-import de.lupus.copyCAT.util.FrameUtil;
+import de.quantumrange.expertClipboard.clip.ClipItem;
+import de.quantumrange.expertClipboard.clip.Clipboard;
+import de.quantumrange.expertClipboard.util.FrameUtil;
 
 import javax.swing.*;
 import java.awt.*;

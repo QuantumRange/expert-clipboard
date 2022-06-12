@@ -1,7 +1,7 @@
-package de.lupus.copyCAT.clip.impl;
+package de.quantumrange.expertClipboard.clip.impl;
 
-import de.lupus.copyCAT.util.FileUtil;
-import de.lupus.copyCAT.clip.ClipType;
+import de.quantumrange.expertClipboard.util.FileUtil;
+import de.quantumrange.expertClipboard.clip.ClipType;
 
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;

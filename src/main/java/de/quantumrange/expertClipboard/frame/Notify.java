@@ -1,6 +1,6 @@
-package de.lupus.copyCAT.frame;
+package de.quantumrange.expertClipboard.frame;
 
-import de.lupus.copyCAT.Main;
+import de.quantumrange.expertClipboard.Main;
 
 import java.awt.*;
 

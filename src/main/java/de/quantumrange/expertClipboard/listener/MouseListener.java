@@ -1,8 +1,8 @@
-package de.lupus.copyCAT.listener;
+package de.quantumrange.expertClipboard.listener;
 
-import de.lupus.copyCAT.Main;
-import de.lupus.copyCAT.frame.InfoFrame;
-import de.lupus.copyCAT.clip.Clipboard;
+import de.quantumrange.expertClipboard.Main;
+import de.quantumrange.expertClipboard.frame.InfoFrame;
+import de.quantumrange.expertClipboard.clip.Clipboard;
 import org.jnativehook.mouse.NativeMouseEvent;
 import org.jnativehook.mouse.NativeMouseMotionListener;
 

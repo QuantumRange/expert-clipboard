@@ -1,4 +1,4 @@
-package de.lupus.copyCAT.clip.impl;
+package de.quantumrange.expertClipboard.clip.impl;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;

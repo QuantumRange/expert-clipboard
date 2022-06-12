@@ -1,8 +1,8 @@
-package de.lupus.copyCAT.listener;
+package de.quantumrange.expertClipboard.listener;
 
-import de.lupus.copyCAT.Main;
-import de.lupus.copyCAT.frame.Notify;
-import de.lupus.copyCAT.clip.Clipboard;
+import de.quantumrange.expertClipboard.Main;
+import de.quantumrange.expertClipboard.frame.Notify;
+import de.quantumrange.expertClipboard.clip.Clipboard;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;

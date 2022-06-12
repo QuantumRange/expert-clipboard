@@ -1,6 +1,6 @@
-package de.lupus.copyCAT.util;
+package de.quantumrange.expertClipboard.util;
 
-import de.lupus.copyCAT.frame.Animation;
+import de.quantumrange.expertClipboard.frame.Animation;
 
 public class FrameUtil {
 

@@ -1,4 +1,4 @@
-package de.lupus.copyCAT.frame;
+package de.quantumrange.expertClipboard.frame;
 
 import javax.swing.*;
 import java.awt.*;

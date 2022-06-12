@@ -1,9 +1,9 @@
-package de.lupus.copyCAT.clip;
+package de.quantumrange.expertClipboard.clip;
 
-import de.lupus.copyCAT.Main;
-import de.lupus.copyCAT.clip.impl.EmptyFlavor;
-import de.lupus.copyCAT.frame.Notify;
-import de.lupus.copyCAT.util.FileUtil;
+import de.quantumrange.expertClipboard.Main;
+import de.quantumrange.expertClipboard.clip.impl.EmptyFlavor;
+import de.quantumrange.expertClipboard.frame.Notify;
+import de.quantumrange.expertClipboard.util.FileUtil;
 
 import java.awt.*;
 import java.io.File;

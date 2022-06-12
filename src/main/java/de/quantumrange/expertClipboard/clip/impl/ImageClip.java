@@ -1,6 +1,6 @@
-package de.lupus.copyCAT.clip.impl;
+package de.quantumrange.expertClipboard.clip.impl;
 
-import de.lupus.copyCAT.clip.ClipType;
+import de.quantumrange.expertClipboard.clip.ClipType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
