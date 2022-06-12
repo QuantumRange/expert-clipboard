@@ -31,6 +31,7 @@ public class Main {
 
 		try {
 			Toolkit.getDefaultToolkit().getSystemClipboard().addFlavorListener(e -> Clipboard.update());
+
 			GlobalScreen.addNativeKeyListener(new KeyListener());
 			GlobalScreen.addNativeMouseMotionListener(new MouseListener());
 			GlobalScreen.registerNativeHook();
@@ -47,6 +48,7 @@ public class Main {
 				} catch (InterruptedException ignore) { }
 			}
 		});
+
 		timer.start();
 	}
 
