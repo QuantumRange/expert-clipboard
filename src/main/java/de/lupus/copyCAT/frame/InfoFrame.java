@@ -1,11 +1,8 @@
 package de.lupus.copyCAT.frame;
 
-import de.lupus.copyCAT.clip.ClipItem;
-import de.lupus.copyCAT.clip.Clipboard;
-import de.lupus.copyCAT.util.FrameUtil;
-
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.Clipboard;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 

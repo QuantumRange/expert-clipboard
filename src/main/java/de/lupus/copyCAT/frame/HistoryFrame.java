@@ -3,7 +3,6 @@ package de.lupus.copyCAT.frame;
 import de.lupus.copyCAT.clip.ClipItem;
 import de.lupus.copyCAT.clip.Clipboard;
 import de.lupus.copyCAT.util.FrameUtil;
-import org.jnativehook.keyboard.NativeKeyEvent;
 
 import javax.swing.*;
 import java.awt.*;
